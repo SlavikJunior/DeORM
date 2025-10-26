@@ -13,7 +13,7 @@ internal class UniversalDao<T : Any>(
     private val typeParameterClass: Class<T>
 ) : Dao<T> {
 
-    private var tableName: String? = null
+    private var tableName: String? = getTableName()
 
     private val connection: Connection
         get() = DbConnectionManager.getConnection()
