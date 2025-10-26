@@ -1,11 +1,10 @@
-package com.slavikjunior.deorm.orm
+package com.slavikjunior.deorm.dao
 
 import com.slavikjunior.deorm.annotations.CreateMethod
 import com.slavikjunior.deorm.annotations.DeleteMethod
 import com.slavikjunior.deorm.annotations.ReadMethod
 import com.slavikjunior.deorm.annotations.UpdateMethod
 import java.sql.SQLException
-
 
 interface Dao<T> {
     @CreateMethod

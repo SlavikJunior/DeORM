@@ -1,5 +1,6 @@
 package com.slavikjunior.deorm.orm
 
+import com.slavikjunior.deorm.dao.Dao
 import com.slavikjunior.deorm.dao.UniversalDao
 import com.slavikjunior.deorm.utils.toFieldMapByColumnNames
 
