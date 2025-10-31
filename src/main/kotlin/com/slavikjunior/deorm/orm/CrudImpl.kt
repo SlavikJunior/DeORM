@@ -38,11 +38,11 @@ internal object CrudImpl : Crud {
     override fun <T : Entity> deleteByEntity(entity: T) =
         deleteByValues(entity::class.java, entity.toFieldMapByColumnNames())
 
-    private fun getDaoInstance(entityClass: Class<*>): Dao<*> {
+    private fun <T : Entity> getDaoInstance(entityClass: Class<T>): Dao<T> {
         if (dao == null)
             dao = UniversalDao(entityClass)
-        return dao as Dao<*>
+        return dao as Dao<T>
     }
 
-    fun getLastId(): Int? = dao?.getLastId()
+    fun <T : Entity> getLastId(entityClass: Class<T>): Int? = getDaoInstance(entityClass).getLastId(entityClass)
 }

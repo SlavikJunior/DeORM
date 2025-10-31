@@ -4,9 +4,10 @@ import com.slavikjunior.deorm.annotations.CreateMethod
 import com.slavikjunior.deorm.annotations.DeleteMethod
 import com.slavikjunior.deorm.annotations.ReadMethod
 import com.slavikjunior.deorm.annotations.UpdateMethod
+import com.slavikjunior.deorm.orm.Entity
 import java.sql.SQLException
 
-interface Dao<T> {
+interface Dao<T: Entity> {
     @CreateMethod
     @Throws(SQLException::class)
     fun createEntity(columnsToValues: Map<String, Any?>): Boolean
@@ -22,4 +23,6 @@ interface Dao<T> {
     @DeleteMethod
     @Throws(SQLException::class)
     fun deleteEntityByValues(columnsToValues: Map<String, Any?>): Boolean
+
+    fun getLastId(entityClass: Class<T>): Int?
 }
