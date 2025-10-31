@@ -6,7 +6,7 @@ import com.slavikjunior.deorm.utils.toFieldMapByColumnNames
 
 internal object CrudImpl : Crud {
 
-    private var dao: Dao<*>? = null
+    private var dao: UniversalDao<*>? = null
 
     override fun <T : Entity> create(entity: T): Boolean {
         return getDaoInstance(entity::class.java).createEntity(entity.toFieldMapByColumnNames())
@@ -43,4 +43,6 @@ internal object CrudImpl : Crud {
             dao = UniversalDao(entityClass)
         return dao as Dao<*>
     }
+
+    fun getLastId(): Int? = dao?.getLastId()
 }

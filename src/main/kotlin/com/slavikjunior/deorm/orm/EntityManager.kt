@@ -22,4 +22,6 @@ object EntityManager {
 
     fun <T : Entity> delete(entity: T) =
         CrudImpl.deleteByEntity(entity)
+
+    fun getLastId(): Int? = CrudImpl.getLastId()
 }

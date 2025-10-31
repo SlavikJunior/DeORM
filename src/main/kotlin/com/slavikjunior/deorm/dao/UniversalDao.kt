@@ -218,4 +218,11 @@ internal class UniversalDao<T : Any>(
         }
         return tableName as String
     }
+
+    fun getLastId(): Int? {
+        val sql = "select max(id) from $tableName;"
+        connection.prepareStatement(sql).use { ps ->
+            ps.executeQuery().use { rs -> return rs.getInt(1) }
+        }
+    }
 }
