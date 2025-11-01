@@ -10,24 +10,24 @@ import java.util.Properties
 object DbConnectionManager {
     private val properties = Properties()
 
-    private lateinit var host: String
-    private lateinit var port: String
-    private lateinit var databaseName: String
-    private lateinit var user: String
-    private lateinit var password: String
+    private var host: String = "localhost"
+    private var port: String = "5432"
+    private var databaseName: String = "postgres"
+    private var user: String = "postgres"
+    private var password: String = "password"
 
-    init {
+    fun initialize() {
         loadDriver()
         loadProperties()
-        initialize()
+        applyProperties()
     }
 
     fun configure(
-        host: String = this.host,
-        port: String = this.port,
-        databaseName: String = this.databaseName,
-        user: String = this.user,
-        password: String = this.password
+        host: String,
+        port: String,
+        databaseName: String,
+        user: String,
+        password: String
     ) {
         this.host = host
         this.port = port
@@ -38,6 +38,9 @@ object DbConnectionManager {
 
     @Throws(DbAccessException::class)
     fun getConnection(): Connection {
+        // Гарантируем, что драйвер загружен
+        loadDriver()
+
         try {
             val url = "jdbc:postgresql://$host:$port/$databaseName"
             val conn = DriverManager.getConnection(url, user, password)
@@ -56,14 +59,18 @@ object DbConnectionManager {
     }
 
     private fun loadProperties() {
-        properties.load(this::class.java.getResourceAsStream("/application.properties"))
+        try {
+            properties.load(this::class.java.getResourceAsStream("/application.properties"))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
-    private fun initialize() {
-        this.databaseName = properties.getProperty("database.name") ?: "postgres"
-        this.host = properties.getProperty("host") ?: "localhost"
-        this.port = properties.getProperty("port") ?: "5432"
-        this.user = properties.getProperty("user") ?: "root"
-        this.password = properties.getProperty("password") ?: "root"
+    private fun applyProperties() {
+        properties.getProperty("database.name")?.let { databaseName = it }
+        properties.getProperty("host")?.let { host = it }
+        properties.getProperty("port")?.let { port = it }
+        properties.getProperty("user")?.let { user = it }
+        properties.getProperty("password")?.let { password = it }
     }
 }
