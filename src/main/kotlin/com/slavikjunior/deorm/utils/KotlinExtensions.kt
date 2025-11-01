@@ -6,11 +6,13 @@ import com.slavikjunior.deorm.annotations.Column
 import com.slavikjunior.deorm.annotations.Id
 
 fun Any.toFieldMapByColumnNames(): Map<String, Any?> {
-    return this::class.java.declaredFields.associate { field ->
-        field.isAccessible = true
-        val name = field.annotations.find { it is Column }.let { it as Column }.name
-        name to field.get(this)
-    }
+    return this::class.java.declaredFields
+        .filter { it.isAnnotationPresent(Column::class.java) }
+        .associate { field ->
+            field.isAccessible = true
+            val columnAnnotation = field.getAnnotation(Column::class.java)
+            columnAnnotation.name to field.get(this)
+        }
 }
 
 fun Class<*>.isNullableColumn(columnName: String): Boolean {

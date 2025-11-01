@@ -12,3 +12,4 @@ class DriverNotFoundException(message: String) : ClassNotFoundException(message)
 
 class NotNullableColumnException(message: String) : SQLException(message)
 
+class NotAnnotatedTableException(message: String) : SQLException(message)
