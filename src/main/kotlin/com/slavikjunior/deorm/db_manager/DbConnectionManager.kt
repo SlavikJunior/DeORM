@@ -26,10 +26,14 @@ object DbConnectionManager {
         host: String = this.host,
         port: String = this.port,
         databaseName: String = this.databaseName,
+        user: String = this.user,
+        password: String = this.password
     ) {
         this.host = host
         this.port = port
         this.databaseName = databaseName
+        this.user = user
+        this.password = password
     }
 
     @Throws(DbAccessException::class)
