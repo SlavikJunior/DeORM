@@ -238,4 +238,11 @@ internal class UniversalDao<T : Entity>(
         typeParameterClass.declaredConstructors
             .map { it -> it.isAccessible = true; it }
             .find { it.parameterCount == initArgs.size }
+
+    override fun execute(query: String): ResultSet {
+        val resultSet = connection.use { connection ->
+            connection.prepareStatement(query).executeQuery()
+        }
+        return resultSet
+    }
 }

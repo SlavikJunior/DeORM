@@ -1,5 +1,7 @@
 package com.slavikjunior.deorm.orm
 
+import java.sql.ResultSet
+
 interface Crud {
 
     fun <T : Entity> create(entity: T): Boolean
@@ -10,4 +12,5 @@ interface Crud {
     fun <T : Entity> deleteByValues(entityClass: Class<T>, columnsToValues: Map<String, Any?>): Boolean
     fun <T : Entity> deleteById(entityClass: Class<T>, id: Int): Boolean
     fun <T : Entity> deleteByEntity(entity: T): Boolean
+    fun executeQuery(query: String): ResultSet
 }

@@ -5,6 +5,7 @@ import com.slavikjunior.deorm.annotations.DeleteMethod
 import com.slavikjunior.deorm.annotations.ReadMethod
 import com.slavikjunior.deorm.annotations.UpdateMethod
 import com.slavikjunior.deorm.orm.Entity
+import java.sql.ResultSet
 import java.sql.SQLException
 
 interface Dao<T: Entity> {
@@ -25,4 +26,6 @@ interface Dao<T: Entity> {
     fun deleteEntityByValues(columnsToValues: Map<String, Any?>): Boolean
 
     fun getLastId(entityClass: Class<T>): Int?
+
+    fun execute(query: String): ResultSet
 }

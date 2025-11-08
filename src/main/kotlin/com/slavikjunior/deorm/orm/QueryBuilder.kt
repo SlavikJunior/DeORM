@@ -1,31 +1,30 @@
 package com.slavikjunior.deorm.orm
 
-import kotlin.math.exp
+class QueryBuilder() {
 
-class QueryBuilder {
+    private val query = StringBuilder("select" )
 
-    private val query = StringBuilder()
-
-    private val fromAndJoin = StringBuilder()
-    private val selectedColumns = mutableListOf<String>()
-    private var whereCondition = StringBuilder("where ")
-
-    fun select(columns: List<String>): QueryBuilder {
-        selectedColumns.addAll(columns)
+    fun select(vararg columns: String): QueryBuilder {
+        columns.forEachIndexed { index, column ->
+            query.append(column)
+            if(index < columns.size - 1)
+                query.append(", ")
+        }
         return this
     }
 
     fun from(table: String): QueryBuilder {
-        fromAndJoin.append(table)
+        query.append(" from ").append(table)
         return this
     }
 
-    fun join(joinType: JoinType, rightTable: String, expression: String) {
-        fromAndJoin.append(" ${joinType.name} $rightTable on $expression")
+    fun where(condition: String): QueryBuilder {
+        query.append(" where ").append(condition)
+        return this
     }
 
-    fun where(condition: String): QueryBuilder {
-        whereCondition.append(condition)
+    fun and(condition: String): QueryBuilder {
+        query.append(" and ").append(condition)
         return this
     }
 
@@ -34,31 +33,21 @@ class QueryBuilder {
         return this
     }
 
-    fun groupBy(column: String): QueryBuilder {
-        query.append(" group by ").append(column)
-        return this
-    }
-
-    fun having(expression: String): QueryBuilder {
-        query.append(" having ").append(expression)
-        return this
-    }
-
-    fun build(): String {
-        val query = StringBuilder("select ")
-        selectedColumns.forEachIndexed { index, column ->
+    fun groupBy(vararg columns: String): QueryBuilder {
+        columns.forEachIndexed { index, column ->
             query.append(column)
-            if (index < selectedColumns.size - 1)
+            if(index < columns.size - 1)
                 query.append(", ")
         }
-        query.append(fromAndJoin)
-
-        return query.toString()
+        return this
     }
 
+    fun execute(): String {
+        return query.toString()
+    }
 }
 
-enum class JoinType {
+enum class jointype {
     inner,
     left,
     right
