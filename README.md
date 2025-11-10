@@ -1,11 +1,11 @@
 
-# 🧩 DeORM
+# DeORM
 
 Простая и легковесная ORM (Object-Relational Mapping) библиотека для **Kotlin**.
 
 ---
 
-## 🚀 Возможности
+## Возможности
 
 - **CRUD операции** — создание, чтение, обновление и удаление сущностей  
 - **Автоматическое маппинг** — преобразование между объектами Kotlin и таблицами БД  
@@ -16,9 +16,40 @@
 
 ---
 
-## ⚙️ Быстрый старт
+## Структура
 
-### 📦 Подключение
+```bash
+src
+└── main
+    └── kotlin
+        └── com
+            └── slavikjunior
+                └── deorm
+                    ├── annotations
+                    │   └── Annotations.kt
+                    ├── dao
+                    │   ├── Dao.kt
+                    │   └── UniversalDao.kt
+                    ├── db_manager
+                    │   └── DbConnectionManager.kt
+                    ├── exceptions
+                    │   └── Exceptions.kt
+                    ├── orm
+                    │   ├── CrudImpl.kt
+                    │   ├── Crud.kt
+                    │   ├── Entity.kt
+                    │   ├── EntityManager.kt
+                    │   └── QueryBuilder.kt
+                    ├── Person.kt
+                    ├── Playground.kt
+                    └── utils
+                        └── KotlinExtensions.kt
+
+```
+
+---
+
+## Подключение
 
 > Пока библиотека не опубликована в Maven Central, можно скачать JAR из страницы **Releases** и подключить вручную.
 
@@ -44,17 +75,19 @@
 </dependencies>
 ```
 
-#### ⚙️ Настройка базы данных
+#### Настройка базы данных
 
-Создайте файл application.properties в src/main/resources/:
-
+> Создайте файл application.properties в src/main/resources/:
+```bash
 database.name=mydb
 host=localhost
 port=5432
 user=postgres
 password=7913
-###
-##### 🧱 Определение сущности
+```
+
+##### Определение сущности
+```bash
 import com.slavikjunior.deorm.annotations.Column
 import com.slavikjunior.deorm.annotations.Id
 import com.slavikjunior.deorm.annotations.Table
@@ -76,8 +109,10 @@ data class Person(
     @Column(name = "phone", type = Types.VARCHAR, nullable = true)
     var phone: String? = null
 ) : Entity
-##
-# 🧩 Пример использования
+```
+
+# Пример использования
+```bash
 import com.slavikjunior.deorm.orm.EntityManager
 
 fun main() {
@@ -119,9 +154,18 @@ fun main() {
         println("$updated is deleted: $isDeleted")
     }
 }
-##
-# 🖥️ Пример вывода
+```
+---
+
+# Пример вывода
+```bash
 Person(id=0, firstName=John, lastName=Doe, phone=+78126665252) is created: true
 Person(id=0, firstName=John, lastName=Doe, phone=+78126665252) is found: Person(id=3, firstName=John, lastName=Doe, phone=+78126665252)
 Person(id=3, firstName=John, lastName=Doe, phone=+78126665252) is updated: Person(id=3, firstName=Arthur, lastName=Sharafiev, phone=+78126665252)
 Person(id=3, firstName=Arthur, lastName=Sharafiev, phone=+78126665252) is deleted: true
+```
+
+---
+
+# Автор:
+SlavikJunior
