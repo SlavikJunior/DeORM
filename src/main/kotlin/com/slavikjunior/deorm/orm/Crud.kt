@@ -12,5 +12,5 @@ interface Crud {
     fun <T : Entity> deleteByValues(entityClass: Class<T>, columnsToValues: Map<String, Any?>): Boolean
     fun <T : Entity> deleteById(entityClass: Class<T>, id: Int): Boolean
     fun <T : Entity> deleteByEntity(entity: T): Boolean
-    fun executeQuery(query: String): ResultSet
+    fun <T : Entity> executeQuery(entityClass: Class<T>, query: String): ResultSet
 }

@@ -2,7 +2,7 @@ package com.slavikjunior.deorm.orm
 
 class QueryBuilder() {
 
-    private val query = StringBuilder("select" )
+    private val query = StringBuilder("select " )
 
     fun select(vararg columns: String): QueryBuilder {
         columns.forEachIndexed { index, column ->

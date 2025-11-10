@@ -1,6 +1,5 @@
 package com.slavikjunior.deorm.orm
 
-import com.slavikjunior.deorm.Person
 import com.slavikjunior.deorm.dao.Dao
 import com.slavikjunior.deorm.dao.UniversalDao
 import com.slavikjunior.deorm.utils.toFieldMapByColumnNames
@@ -46,7 +45,7 @@ internal object CrudImpl : Crud {
 
     fun <T : Entity> getLastId(entityClass: Class<T>): Int? = getDaoInstance(entityClass).getLastId(entityClass)
 
-    override fun executeQuery(query: String): ResultSet {
-        return getDaoInstance(Person::class.java).execute(query)
+    override fun <T: Entity> executeQuery(entityClass: Class<T>, query: String): ResultSet {
+        return getDaoInstance(entityClass).execute(query)
     }
 }

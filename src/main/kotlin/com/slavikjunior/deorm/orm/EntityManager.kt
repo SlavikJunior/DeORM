@@ -25,6 +25,6 @@ object EntityManager {
 
     fun <T : Entity> getLastId(entityClass: Class<T>): Int? = CrudImpl.getLastId(entityClass)
 
-    fun executeQuery(query: String) =
-        CrudImpl.executeQuery(query)
+    fun <T : Entity> executeQuery(entityClass: Class<T>, query: String) =
+        CrudImpl.executeQuery(entityClass, query)
 }

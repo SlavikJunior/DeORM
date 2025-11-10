@@ -68,9 +68,9 @@ object DbConnectionManager {
 
     private fun applyProperties() {
         properties.getProperty("database.name")?.let { databaseName = it }
-        properties.getProperty("host")?.let { host = it }
-        properties.getProperty("port")?.let { port = it }
-        properties.getProperty("user")?.let { user = it }
-        properties.getProperty("password")?.let { password = it }
+        properties.getProperty("database.host")?.let { host = it }
+        properties.getProperty("database.port")?.let { port = it }
+        properties.getProperty("database.user")?.let { user = it }
+        properties.getProperty("database.password")?.let { password = it }
     }
 }
