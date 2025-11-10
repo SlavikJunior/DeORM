@@ -24,7 +24,7 @@ internal class UniversalDao<T : Entity>(
 
     @CreateMethod
     @Throws(DbAccessException::class, NotNullableColumnException::class)
-    override fun createEntity(columnsToValues: Map<String, Any?>): Boolean {
+    override fun createEntity(columnsToValues: Map<String, Any?>): T {
         val columnsList = mutableListOf<String>()
         val valuesList = mutableListOf<Any?>()
 
@@ -55,7 +55,7 @@ internal class UniversalDao<T : Entity>(
         while (index++ < values.size - 1) {
             sb.append("?").append(", ")
         }
-        sb.append("?").append(");")
+        sb.append("?").append(") returning *;")
 
 
         index = 1
@@ -73,7 +73,7 @@ internal class UniversalDao<T : Entity>(
                     else ps.setObject(index++, value)
                 }
                 try {
-                    return ps.executeUpdate() > 0
+                    return createInstanceByResultSet(ps.executeQuery()).last()
                 } catch (e: SQLException) {
                     throw DbAccessException("Database access error occurs.", e)
                 }
@@ -100,18 +100,21 @@ internal class UniversalDao<T : Entity>(
         sb.append(';')
 
         var result: List<T>? = null
-        connection.prepareStatement(sb.toString()).use { ps ->
-            val values = columnsToValues.values.stream().filter { it != null }.toArray()
-            index = 1
-            for (value in values) {
-                when (value) {
-                    is String -> ps.setString(index++, value)
-                    is Int -> ps.setInt(index++, value)
-                    else -> ps.setObject(index++, value)
+        connection.use { connection ->
+            connection.prepareStatement(sb.toString()).use { ps ->
+                val values = columnsToValues.values.stream().filter { it != null }.toArray()
+                index = 1
+                for (value in values) {
+                    when (value) {
+                        is String -> ps.setString(index++, value)
+                        is Int -> ps.setInt(index++, value)
+                        else -> ps.setObject(index++, value)
+                    }
                 }
+                ps.executeQuery().use { rs -> result = createInstanceByResultSet(rs) }
             }
-            ps.executeQuery().use { rs -> result = createInstanceByResultSet(rs) }
         }
+
         return result
     }
 
@@ -130,23 +133,25 @@ internal class UniversalDao<T : Entity>(
         sb.append(" where id = ?;")
 
         var count = 0
-        connection.prepareStatement(sb.toString()).use { ps ->
-            val values = columnsToValues.values.stream()
-            index = 1
-            for (value in values) {
-                when (value) {
-                    is String -> ps.setString(index++, value)
-                    is Int -> ps.setInt(index++, value)
-                    null -> ps.setNull(index++, Types.NULL)
-                    else -> ps.setObject(index++, value)
+        connection.use { connection ->
+            connection.prepareStatement(sb.toString()).use { ps ->
+                val values = columnsToValues.values.stream()
+                index = 1
+                for (value in values) {
+                    when (value) {
+                        is String -> ps.setString(index++, value)
+                        is Int -> ps.setInt(index++, value)
+                        null -> ps.setNull(index++, Types.NULL)
+                        else -> ps.setObject(index++, value)
+                    }
                 }
+                // "where id = ? -> where id = $id"
+                ps.setInt(index++, id)
+                count = ps.use { ps ->
+                    ps.executeUpdate()
+                }
+                return count > 0
             }
-            // "where id = ? -> where id = $id"
-            ps.setInt(index++, id)
-            count = ps.use { ps ->
-                ps.executeUpdate()
-            }
-            return count > 0
         }
     }
 
@@ -224,13 +229,6 @@ internal class UniversalDao<T : Entity>(
                 ?: throw NotAnnotatedTableException("Table annotation not found on ${typeParameterClass.simpleName}.")
         }
         return tableName!!
-    }
-
-    override fun getLastId(entityClass: Class<T>): Int? {
-        val sql = "select max(id) from $tableName;"
-        connection.prepareStatement(sql).use { ps ->
-            ps.executeQuery().use { rs -> return rs.getInt(1) }
-        }
     }
 
     // todo подразумевается, что в классе есть однозначная корреляция колчества аргументов с конструктором занести в документацию

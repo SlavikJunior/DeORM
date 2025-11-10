@@ -4,9 +4,10 @@ import java.sql.ResultSet
 
 interface Crud {
 
-    fun <T : Entity> create(entity: T): Boolean
+    fun <T : Entity> create(entity: T): T
     fun <T : Entity> getById(entityClass: Class<T>, id: Int): List<T>?
     fun <T : Entity> getByValues(entityClass: Class<T>, columnsToValues: Map<String, Any?>): List<T>?
+    fun <T : Entity> getUnique(entityClass: Class<T>, uniqueAttributes: Map<String, Any?>): T?
     fun <T : Entity> update(entityClass: Class<T>, id: Int, columnsToValues: Map<String, Any?>): Boolean
     fun <T : Entity> updateAndGet(entityClass: Class<T>, id: Int, columnsToValues: Map<String, Any?>): T?
     fun <T : Entity> deleteByValues(entityClass: Class<T>, columnsToValues: Map<String, Any?>): Boolean

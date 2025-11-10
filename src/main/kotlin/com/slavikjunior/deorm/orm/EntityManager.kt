@@ -2,13 +2,16 @@ package com.slavikjunior.deorm.orm
 
 object EntityManager {
 
-    fun <T : Entity> create(entity: T) =
+    fun <T : Entity> create(entity: T): T =
         CrudImpl.create(entity)
 
     fun <T : Entity> get(entityClass: Class<T>, id: Int) = CrudImpl.getById(entityClass, id)
 
     fun <T : Entity> get(entityClass: Class<T>, columnsToValues: Map<String, Any?>) =
         CrudImpl.getByValues(entityClass, columnsToValues)
+
+    fun <T : Entity> getUnique(entityClass: Class<T>, uniqueAttributes: Map<String, Any?>) =
+        CrudImpl.getUnique(entityClass, uniqueAttributes)
 
     fun <T : Entity> update(entityClass: Class<T>, id: Int, columnsToValues: Map<String, Any?>, get: Boolean = false) =
         if (get) CrudImpl.updateAndGet(entityClass, id, columnsToValues)
@@ -22,8 +25,6 @@ object EntityManager {
 
     fun <T : Entity> delete(entity: T) =
         CrudImpl.deleteByEntity(entity)
-
-    fun <T : Entity> getLastId(entityClass: Class<T>): Int? = CrudImpl.getLastId(entityClass)
 
     fun <T : Entity> executeQuery(entityClass: Class<T>, query: String) =
         CrudImpl.executeQuery(entityClass, query)

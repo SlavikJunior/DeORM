@@ -9,7 +9,7 @@ internal object CrudImpl : Crud {
 
     private val daoMap = mutableMapOf<Class<*>, UniversalDao<*>>()
 
-    override fun <T : Entity> create(entity: T): Boolean {
+    override fun <T : Entity> create(entity: T): T {
         return getDaoInstance(entity::class.java).createEntity(entity.toFieldMapByColumnNames())
     }
 
@@ -20,6 +20,8 @@ internal object CrudImpl : Crud {
         columnsToValues: Map<String, Any?>
     ) = getDaoInstance(entityClass).readEntityByValues(columnsToValues) as List<T>?
 
+    override fun <T : Entity> getUnique(entityClass: Class<T>, uniqueAttributes: Map<String, Any?>) =
+        getByValues(entityClass, uniqueAttributes)?.first()
 
     override fun <T : Entity> update(entityClass: Class<T>, id: Int, columnsToValues: Map<String, Any?>) =
         getDaoInstance(entityClass).updateEntityByValues(id, columnsToValues)
@@ -42,8 +44,6 @@ internal object CrudImpl : Crud {
     private fun <T : Entity> getDaoInstance(entityClass: Class<T>): Dao<T> {
         return daoMap.getOrPut(entityClass) { UniversalDao(entityClass) } as Dao<T>
     }
-
-    fun <T : Entity> getLastId(entityClass: Class<T>): Int? = getDaoInstance(entityClass).getLastId(entityClass)
 
     override fun <T: Entity> executeQuery(entityClass: Class<T>, query: String): ResultSet {
         return getDaoInstance(entityClass).execute(query)

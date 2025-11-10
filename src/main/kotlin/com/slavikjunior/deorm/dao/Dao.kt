@@ -11,7 +11,7 @@ import java.sql.SQLException
 interface Dao<T: Entity> {
     @CreateMethod
     @Throws(SQLException::class)
-    fun createEntity(columnsToValues: Map<String, Any?>): Boolean
+    fun createEntity(columnsToValues: Map<String, Any?>): T
 
     @ReadMethod
     @Throws(SQLException::class)
@@ -24,8 +24,6 @@ interface Dao<T: Entity> {
     @DeleteMethod
     @Throws(SQLException::class)
     fun deleteEntityByValues(columnsToValues: Map<String, Any?>): Boolean
-
-    fun getLastId(entityClass: Class<T>): Int?
 
     fun execute(query: String): ResultSet
 }
